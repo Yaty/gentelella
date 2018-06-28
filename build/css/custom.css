@@ -1,16 +1,15 @@
-
 html , body{
-	
+
  height:100%;
- 
+
 }
- 
+
 .full-width {
-	
+
  width:100%;
- 
+
  }
- 
+
 .full-height{
  height:100%;
  }
@@ -143,30 +142,11 @@ html , body{
 .calendar-exibit .calendar-table {
     padding: 0 0 4px 0
 }
-.left_col {
-    background: #2A3F54
-}
-.nav-sm .container.body .col-md-3.left_col {
-    min-height: 100%;
-    width: 70px;
-    padding: 0;
-    z-index: 9999;
-    position: absolute
-}
-.nav-sm .container.body .col-md-3.left_col.menu_fixed {
-    position: fixed;
-    height: 100%
-}
-.nav-sm .container.body .col-md-3.left_col .mCSB_container,
-.nav-sm .container.body .col-md-3.left_col .mCustomScrollBox {
-    overflow: visible
-}
 .nav-sm .hidden-small {
     visibility: hidden
 }
 .nav-sm .container.body .right_col {
     padding: 10px 20px;
-    margin-left: 70px;
     z-index: 2
 }
 .nav-sm .navbar.nav_title {
@@ -337,25 +317,12 @@ html , body{
         position: static
     }
 }
-.nav-md .container.body .col-md-3.left_col {
-    min-height: 100%;
-    width: 230px;
-    padding: 0;
-    position: absolute;
-    display: -ms-flexbox;
-    display: flex;
-    z-index: 1
-}
-.nav-md .container.body .col-md-3.left_col.menu_fixed {
-    height: 100%;
-    position: fixed
-}
+
 body .container.body .right_col {
     background: #F7F7F7
 }
 .nav-md .container.body .right_col {
     padding: 10px 20px 0;
-    margin-left: 230px
 }
 .nav_title {
     width: 230px;
@@ -368,11 +335,8 @@ body .container.body .right_col {
     .nav-md .container.body .right_col,
     .nav-md .container.body .top_nav {
         width: 100%;
-        margin: 0
     }
-    .nav-md .container.body .col-md-3.left_col {
-        display: none
-    }
+
     .nav-md .container.body .right_col {
         width: 100%;
         padding-right: 0
@@ -396,12 +360,6 @@ body .container.body .right_col {
     .x_title h2 small {
         display: none
     }
-}
-.left_col .mCSB_scrollTools {
-    width: 6px
-}
-.left_col .mCSB_dragger {
-    max-height: 400px !important
 }
 .blue {
     color: #3498DB
@@ -500,7 +458,6 @@ body {
 }
 .main_container .top_nav {
     display: block;
-    margin-left: 230px
 }
 .no-padding {
     padding: 0 !important
@@ -1698,12 +1655,9 @@ span.right {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    position: relative
-}
-@media (min-width: 992px) {
-    footer {
-        margin-left: 230px
-    }
+    position: relative;
+    margin-top: 3px;
+    width: 12.5%;
 }
 @media (min-width: 992px) {
     .tile_count .tile_stats_count {
@@ -4240,7 +4194,7 @@ ul.notifications {
 table thead .checkbox { margin-top:-7px;margin-top:-21px; }
 table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 */
-			
+
 .daterangepicker.xdisplay { width:228px; }
 
 .dataTables_wrapper > .row{
