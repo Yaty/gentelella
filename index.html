@@ -11,25 +11,25 @@
     <title>Work On</title>
 
     <!-- Bootstrap -->
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
 	
     <!-- bootstrap-progressbar -->
-    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- JQVMap -->
-    <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
     <!-- bootstrap-daterangepicker -->
-    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.css" rel="stylesheet">
+    <link href="build/css/custom.css" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -533,20 +533,9 @@
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>To Do List <small>Sample tasks</small></h2>
+                      <h2>To Do List</h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                          <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Settings 1</a>
-                            </li>
-                            <li><a href="#">Settings 2</a>
-                            </li>
-                          </ul>
-                        </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a>
                         </li>
                       </ul>
                       <div class="clearfix"></div>
@@ -554,44 +543,47 @@
                     <div class="x_content">
 
                       <div class="">
-                        <ul class="to_do">
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Schedule meeting with new client </p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Create email address for new intern</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Have IT fix the network printer</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Copy backups to offsite location</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Food truck fixie locavors mcsweeney</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Food truck fixie locavors mcsweeney</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Create email address for new intern</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Have IT fix the network printer</p>
-                          </li>
-                          <li>
-                            <p>
-                              <input type="checkbox" class="flat"> Copy backups to offsite location</p>
-                          </li>
-                        </ul>
+                        <section class="todoapp">
+                          <header class="header">
+                            <input class="new-todo"
+                                   autofocus autocomplete="off"
+                                   placeholder="What needs to be done?"
+                                   v-model="newTodo"
+                                   @keyup.enter="addTodo">
+                          </header>
+                          <section class="main" v-show="todos.length" v-cloak>
+                            <input class="toggle-all" type="checkbox" v-model="allDone">
+                            <ul class="todo-list">
+                              <li v-for="todo in filteredTodos"
+                                  class="todo"
+                                  :key="todo.id"
+                                  :class="{ completed: todo.completed, editing: todo == editedTodo }">
+                                <div class="view">
+                                  <input class="toggle" type="checkbox" v-model="todo.completed">
+                                  <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+                                  <button class="destroy" @click="removeTodo(todo)"></button>
+                                </div>
+                                <input class="edit" type="text"
+                                       v-model="todo.title"
+                                       v-todo-focus="todo == editedTodo"
+                                       @blur="doneEdit(todo)"
+                                       @keyup.enter="doneEdit(todo)"
+                                       @keyup.esc="cancelEdit(todo)">
+                              </li>
+                            </ul>
+                          </section>
+                          <footer class="footer" v-show="todos.length" v-cloak>
+                            <span class="todo-count">
+                              <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
+                            </span>
+                            <ul class="filters">
+                              <li><a href="#/all" :class="{ selected: visibility == 'all' }">All</a></li>
+                              <li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
+                              <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
+                              <li><button lass="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">Clear</button></li>
+                            </ul>
+                          </footer>
+                        </section>
                       </div>
                     </div>
                   </div>
@@ -725,51 +717,84 @@
     </div>
 
     <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
+    <script src="vendors/nprogress/nprogress.js"></script>
     <!-- Chart.js -->
-    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="vendors/Chart.js/dist/Chart.min.js"></script>
     <!-- gauge.js -->
-    <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
+    <script src="vendors/gauge.js/dist/gauge.min.js"></script>
     <!-- bootstrap-progressbar -->
-    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <script src="vendors/iCheck/icheck.min.js"></script>
     <!-- Skycons -->
-    <script src="../vendors/skycons/skycons.js"></script>
+    <script src="vendors/skycons/skycons.js"></script>
     <!-- Flot -->
-    <script src="../vendors/Flot/jquery.flot.js"></script>
-    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-    <script src="../vendors/Flot/jquery.flot.time.js"></script>
-    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
+    <script src="vendors/Flot/jquery.flot.js"></script>
+    <script src="vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="vendors/Flot/jquery.flot.time.js"></script>
+    <script src="vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="vendors/Flot/jquery.flot.resize.js"></script>
     <!-- Flot plugins -->
-    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
+    <script src="vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="vendors/flot.curvedlines/curvedLines.js"></script>
     <!-- DateJS -->
-    <script src="../vendors/DateJS/build/date.js"></script>
+    <script src="vendors/DateJS/build/date.js"></script>
     <!-- JQVMap -->
-    <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
-    <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-    <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="vendors/moment/min/moment.min.js"></script>
+    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
     <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
+    <script src="build/js/custom.min.js"></script>
 
     <!-- vuejs -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
     <script>
-        new Vue({
+        var STORAGE_KEY = 'todos'
+        var todoStorage = {
+            fetch: function () {
+                var todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+                todos.forEach(function (todo, index) {
+                    todo.id = index
+                })
+                todoStorage.uid = todos.length
+                return todos
+            },
+            save: function (todos) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+            }
+        }
+
+        // visibility filters
+        var filters = {
+            all: function (todos) {
+                return todos
+            },
+            active: function (todos) {
+                return todos.filter(function (todo) {
+                    return !todo.completed
+                })
+            },
+            completed: function (todos) {
+                return todos.filter(function (todo) {
+                    return todo.completed
+                })
+            }
+        }
+
+
+        const app = new Vue({
             el: '#app',
             data: function() {
                 return {
@@ -782,10 +807,94 @@
                     bugs: [],
                     meetings: [],
                     steps: [],
-                    tasks: []
+                    tasks: [],
+                    todos: todoStorage.fetch(),
+                    newTodo: '',
+                    editedTodo: null,
+                    visibility: 'all'
+                }
+            },
+            // watch todos change for localStorage persistence
+            watch: {
+                todos: {
+                    handler: function (todos) {
+                        todoStorage.save(todos)
+                    },
+                    deep: true
+                }
+            },
+            filters: {
+                pluralize: function (n) {
+                    return n === 1 ? 'item' : 'items'
+                }
+            },
+            directives: {
+                'todo-focus': function (el, binding) {
+                    if (binding.value) {
+                        el.focus()
+                    }
+                }
+            },
+            methods: {
+                addTodo: function () {
+                    var value = this.newTodo && this.newTodo.trim()
+                    if (!value) {
+                        return
+                    }
+                    this.todos.push({
+                        id: todoStorage.uid++,
+                        title: value,
+                        completed: false
+                    })
+                    this.newTodo = ''
+                },
+
+                removeTodo: function (todo) {
+                    this.todos.splice(this.todos.indexOf(todo), 1)
+                },
+
+                editTodo: function (todo) {
+                    this.beforeEditCache = todo.title
+                    this.editedTodo = todo
+                },
+
+                doneEdit: function (todo) {
+                    if (!this.editedTodo) {
+                        return
+                    }
+                    this.editedTodo = null
+                    todo.title = todo.title.trim()
+                    if (!todo.title) {
+                        this.removeTodo(todo)
+                    }
+                },
+
+                cancelEdit: function (todo) {
+                    this.editedTodo = null
+                    todo.title = this.beforeEditCache
+                },
+
+                removeCompleted: function () {
+                    this.todos = filters.active(this.todos)
                 }
             },
             computed: {
+                filteredTodos: function () {
+                    return filters[this.visibility](this.todos)
+                },
+                remaining: function () {
+                    return filters.active(this.todos).length
+                },
+                allDone: {
+                    get: function () {
+                        return this.remaining === 0
+                    },
+                    set: function (value) {
+                        this.todos.forEach(function (todo) {
+                            todo.completed = value
+                        })
+                    }
+                },
                 workersCount: function() {
                     return this.workers.length;
                 },
@@ -839,6 +948,20 @@
                 }
             }
         })
+
+        // handle routing
+        function onHashChange () {
+            var visibility = window.location.hash.replace(/#\/?/, '')
+            if (filters[visibility]) {
+                app.visibility = visibility
+            } else {
+                window.location.hash = ''
+                app.visibility = 'all'
+            }
+        }
+
+        window.addEventListener('hashchange', onHashChange)
+        onHashChange()
     </script>
   </body>
 </html>
