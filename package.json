@@ -3,7 +3,8 @@
   "version": "1.4.0",
   "description": "Gentelella Admin is a free to use Bootstrap admin template",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run unit && npm run e2e",
+    "unit": "mocha test/unit",
     "e2e": "nightwatch --config nightwatch.conf.js"
   },
   "repository": {
@@ -33,6 +34,7 @@
   "homepage": "https://github.com/puikinsh/gentelella#readme",
   "devDependencies": {
     "browser-sync": "^2.12.10",
+    "chai": "^4.1.2",
     "chromedriver": "^2.40.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
@@ -40,6 +42,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-ruby-sass": "^2.0.6",
     "gulp-uglify": "^1.5.3",
+    "mocha": "^5.2.0",
     "nightwatch": "^0.9.21",
     "selenium-server": "^3.13.0"
   }
