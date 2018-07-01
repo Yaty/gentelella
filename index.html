@@ -836,6 +836,9 @@
                 }
             },
             methods: {
+                cleanTodo: function() {
+                  this.todos = [];
+                },
                 addTodo: function () {
                     var value = this.newTodo && this.newTodo.trim()
                     if (!value) {
