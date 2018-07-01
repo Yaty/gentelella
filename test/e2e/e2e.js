@@ -65,11 +65,24 @@ module.exports = {
 
     },
 
-    /**
     ['Can update a todo'](browser) {
+        const text = 'e2e-testing';
+        const updatedText = 'updated!';
 
+        add(browser, text)
+            .moveToElement('.todo-list :first-child label', 10, 10)
+            .doubleClick()
+            .assert.cssClassPresent('.todo-list :first-child', 'editing')
+            .setValue('.todo-list :first-child input[class=edit]', [updatedText, browser.Keys.ENTER])
+            .elements('css selector','.todo-list', function(result) {
+                browser.assert.equal(result.value.length, 1);
+                browser.elementIdText(result.value[0].ELEMENT, function(result){
+                    browser.assert.equal(result.value, text + updatedText);
+                });
+            });
     },
 
+    /**
     ['All filter show all to-dos (todo, active, completed)'](browser) {
 
     },
