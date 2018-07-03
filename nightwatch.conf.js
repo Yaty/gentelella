@@ -2,10 +2,24 @@ const seleniumServer = require("selenium-server");
 const chromedriver = require("chromedriver");
 const SCREENSHOT_PATH = "./screenshots/";
 
+function generateScreenshotFilePath(nightwatchClient, basePath, fileName) {
+    const moduleName = nightwatchClient.currentTest.module,
+        testName = nightwatchClient.currentTest.name
+
+    return path.join(process.cwd(), basePath, moduleName, testName, fileName)
+}
+
 // we use a nightwatch.conf.js file so we can include comments and helper functions
 module.exports = {
     "src_folders": [
         "test/e2e"// Where you are storing your Nightwatch e2e tests
+    ],
+    "custom_commands_path": [
+        "node_modules/nightwatch-vrt/commands",
+    ],
+    "custom_assertions_path": [
+        "test/e2e/assertions",
+        "node_modules/nightwatch-vrt/assertions"
     ],
     "output_folder": "./reports", // reports (test outcome) output by nightwatch
     "selenium": {
@@ -24,7 +38,19 @@ module.exports = {
                 "path": SCREENSHOT_PATH // save screenshots here
             },
             "globals": {
-                "waitForConditionTimeout": 5000 // sometimes internet is slow so wait.
+                "waitForConditionTimeout": 5000, // sometimes internet is slow so wait.,
+                "visual_regression_settings": {
+                    "generate_screenshot_path": generateScreenshotFilePath,
+                    "latest_screenshots_path": "vrt/latest",
+                    "latest_suffix": "",
+                    "baseline_screenshots_path": "vrt/baseline",
+                    "baseline_suffix": "",
+                    "diff_screenshots_path": "vrt/diff",
+                    "diff_suffix": "",
+                    "threshold": 0,
+                    "prompt": false,
+                    "always_save_diff_screenshot": false
+                }
             },
             "desiredCapabilities": { // use Chrome as the default browser for tests
                 "browserName": "chrome"
