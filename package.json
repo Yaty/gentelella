@@ -45,6 +45,9 @@
     "mocha": "^5.2.0",
     "nightwatch": "^0.9.21",
     "nightwatch-vrt": "^0.2.6",
-    "selenium-server": "^3.13.0"
+    "rewire": "^4.0.1",
+    "selenium-server": "^3.13.0",
+    "sinon": "^6.1.0",
+    "vue": "^2.5.16"
   }
 }
