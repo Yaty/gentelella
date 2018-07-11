@@ -129,8 +129,8 @@
                 </li>
 
                 <li role="presentation">
-                  <select id="projects" style="margin: 15px; padding: 3px;">
-                    <option v-for="project in projects" value="project.id">{{ project.name }}</option>
+                  <select id="projects" style="margin: 15px; padding: 3px;" v-model="selectedProjectId" @change="loadProject">
+                    <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
                   </select>
                 </li>
               </ul>
@@ -200,7 +200,7 @@
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageBugsResolved" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageBugsResolved}">
+                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageBugsResolved" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageBugsResolved + '%'}">
                           <span class="sr-only">{{ percentageBugsResolved }} % Complete</span>
                         </div>
                       </div>
@@ -217,7 +217,7 @@
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageMeetingsDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageMeetingsDone}">
+                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageMeetingsDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageBugsResolved + '%'}">
                           <span class="sr-only">{{ percentageMeetingsDone }} % Complete</span>
                         </div>
                       </div>
@@ -233,7 +233,7 @@
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageStepsDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageStepsDone}">
+                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageStepsDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageBugsResolved + '%'}">
                           <span class="sr-only">{{ percentageStepsDone }} % Complete</span>
                         </div>
                       </div>
@@ -249,7 +249,7 @@
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageTasksDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageTasksDone}">
+                        <div class="progress-bar bg-green" role="progressbar" :aria-valuenow="percentageTasksDone" aria-valuemin="0" aria-valuemax="100" :style="{'width': percentageBugsResolved + '%'}">
                           <span class="sr-only">{{ percentageTasksDone }} % Complete</span>
                         </div>
                       </div>
@@ -275,17 +275,14 @@
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <table class="" style="width:100%">
+                  <table class="" style="width:100%" v-show="contributions.length">
                     <tr>
-                      <th style="width:37%;">
-                        <p>Top 5</p>
-                      </th>
                       <th>
                         <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                          <p class="">Worker</p>
+                          <p class="">Contributions</p>
                         </div>
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                          <p class="">Contributions</p>
+                          <p class="">Workers</p>
                         </div>
                       </th>
                     </tr>
@@ -295,40 +292,19 @@
                       </td>
                       <td>
                         <table class="tile_info">
-                          <tr>
+                          <tr v-for="contribution in contributions" :key="contribution.workerId">
                             <td>
-                              <p><i class="fa fa-square blue"></i>Bob </p>
+                              <p><i class="fa fa-square" :style="{color: contribution.backgroundColor}"></i>{{ contribution.firstname }} {{ contribution.lastname }} </p>
                             </td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square green"></i>Léa </p>
-                            </td>
-                            <td>10%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square purple"></i>Michel </p>
-                            </td>
-                            <td>20%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square aero"></i>Dupont </p>
-                            </td>
-                            <td>15%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p><i class="fa fa-square red"></i>Others </p>
-                            </td>
-                            <td>30%</td>
+                            <td>{{ contribution.percentage }}%</td>
                           </tr>
                         </table>
                       </td>
                     </tr>
                   </table>
+                  <div v-else style="text-align: center; vertical-align: middle;">
+                    No contributions yet.
+                  </div>
                 </div>
               </div>
             </div>
@@ -703,6 +679,9 @@
 
             </div>
         </div>
+        <div class="right-col" style="width: 100%; height: 100vh; text-align: center; vertical-align: center;" v-else>
+          Please select a project.
+        </div>
         <!-- /page content -->
 
         <!-- footer content -->
@@ -759,6 +738,9 @@
 
     <!-- vuejs -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script src="build/js/main.js"></script>
   </body>
