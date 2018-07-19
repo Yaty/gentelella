@@ -19,6 +19,7 @@ const window = {
 global.Vue = require('vue');
 global.localStorage = storage;
 global.window = window;
+global.axios = require('axios');
 
 const main = rewire('../../build/js/main');
 const app = main.__get__('app');

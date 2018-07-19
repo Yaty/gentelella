@@ -46,7 +46,9 @@ const filters = {
 const BASE_URL = 'http://localhost:3000/api';
 
 function init_chart_doughnut(contributions = []){
-    if(typeof (Chart) === 'undefined'){ return; }
+    if (typeof Chart === 'undefined') return;
+    const canvas = $(".canvasDoughnut");
+    if (!canvas.length) return;
 
     const chart_doughnut_settings = {
         type: 'doughnut',
@@ -65,19 +67,21 @@ function init_chart_doughnut(contributions = []){
         }
     };
 
-    new Chart($(".canvasDoughnut"), chart_doughnut_settings);
+    new Chart(canvas, chart_doughnut_settings);
 }
 
 let gauge;
 
 function init_gauge(percentage) {
-    if( typeof (Gauge) === 'undefined'){ return; }
+    if (typeof Gauge === 'undefined') return;
     if (typeof percentage !== 'number') return;
 
     if (gauge) {
         gauge.set(percentage);
         return;
     }
+
+    const gaugeEl = document.getElementById("chart_gauge_01");
 
     const chart_gauge_settings = {
         lines: 12,
@@ -96,8 +100,7 @@ function init_gauge(percentage) {
     };
 
 
-    const chart_gauge_01_elem = document.getElementById('chart_gauge_01');
-    gauge = new Gauge(chart_gauge_01_elem).setOptions(chart_gauge_settings);
+    gauge = new Gauge(gaugeEl).setOptions(chart_gauge_settings);
 
     gauge.maxValue = 100;
     gauge.animationSpeed = 32;
@@ -114,6 +117,7 @@ const app = new Vue({
             lastname: null,
             avatar: 'http://localhost:63342/admin/production/images/img.jpg',
             projects: [],
+            conversations: [],
             selectedProjectId: null,
             workers: [],
             bugs: [],
@@ -135,6 +139,7 @@ const app = new Vue({
         await this.getProjects();
         this.selectedProjectId = this.projects.length > 0 ? this.projects[0].id : null;
         await this.loadProject();
+        // setInterval(this.loadConversations, 10000);
     },
     // watch todos change for localStorage persistence
     watch: {
@@ -164,6 +169,14 @@ const app = new Vue({
         }
     },
     methods: {
+        async loadConversations() {
+            const conversations = await axios.get(
+                BASE_URL + '/accounts/' + this.accountId
+                + '/conversations?filter={"include":["accounts"]}'
+            );
+
+            console.log(conversations);
+        },
         generateHex() {
             return "#" + Math.random().toString(16).slice(2, 8);
         },
