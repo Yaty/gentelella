@@ -58,8 +58,8 @@
           <div style="margin-top: 40px;"></div>
           <h1>Projet</h1>
 
-
-          <input type="text" v-model="selectedProject.name" style="width: 80%" placeholder="Name"/>
+          <label for="newProjectName">Nom</label>
+          <input type="text" id="newProjectName" v-model="selectedProject.name" style="width: 80%" placeholder="Nom"/>
           <button @click="updateProject" style="width: 10%; float: right;">Envoyer</button>
         </div>
       </div>
@@ -72,7 +72,8 @@
           <h1>Ajout d'un collaborateur</h1>
 
 
-          <input type="text" v-model="newCollaborator" style="width: 80%" placeholder="E-mail"/>
+          <label for="newCollaboratorName">Nom</label>
+          <input type="text" id="newCollaboratorName" v-model="newCollaborator" style="width: 80%" placeholder="E-mail"/>
           <button @click="addCollaborator" style="width: 10%; float: right;">Envoyer</button>
         </div>
       </div>
@@ -85,8 +86,10 @@
           <h1>Ajout d'un jalon</h1>
 
 
-          <input type="text" v-model="newStepName" style="width: 100%" placeholder="Name"/><br>
-          <input type="date" v-model="newStepDate" style="width: 100%"/><br>
+          <label for="newStepName">Nom</label>
+          <input type="text" id="newStepName" v-model="newStepName" style="width: 100%" placeholder="Nom"/><br>
+          <label for="newStepDate">Date</label>
+          <input type="date" id="newStepDate" v-model="newStepDate" style="width: 100%"/><br>
           <button @click="addStep" style="float: right;">Envoyer</button>
           <br>
           <br>
@@ -100,9 +103,11 @@
           <div style="margin-top: 40px;"></div>
           <h1>Ajout d'une tâche</h1>
 
+          <label for="newTaskName">Nom</label>
+          <input type="text" id="newTaskName" v-model="newTaskName" style="width: 100%" placeholder="Nom"/><br>
 
-          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Name"/><br>
-          <select v-model="newTaskStep">
+          <label for="newTaskStep">Jalon</label>
+          <select v-model="newTaskStep" id="newTaskStep">
             <option v-for="step in steps" :key="step.id" :value="step.id">{{ step.name }}</option>
           </select>
           <button @click="addTask" style="float: right;">Envoyer</button>
@@ -119,11 +124,13 @@
           <h1>Ajout d'une réunion</h1>
 
 
-          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Subject"/><br>
-          <select v-model="newTaskStep">
-            <option v-for="step in steps" :key="step.id" :value="step.id">{{ step.name }}</option>
-          </select>
-          <button @click="addTask" style="float: right;">Envoyer</button>
+          <label for="newMeetingSubject">Sujet</label>
+          <input type="text" id="newMeetingSubject" v-model="newMeetingSubject" style="width: 100%" placeholder="Sujet"/><br>
+          <label for="newMeetingPlace">Lieu</label>
+          <input type="text" id="newMeetingPlace" v-model="newMeetingPlace" style="width: 100%" placeholder="Lieu"/><br>
+          <label for="newMeetingDate">Date</label>
+          <input type="date" id="newMeetingDate" v-model="newMeetingDate" style="width: 100%"/><br>
+          <button @click="addMeeting" style="float: right;">Envoyer</button>
           <br>
           <br>
         </div>
@@ -136,9 +143,11 @@
           <div style="margin-top: 40px;"></div>
           <h1>Ajout d'un bug</h1>
 
+          <label for="newBugName">Nom</label>
+          <input id="newBugName" type="text" v-model="newBugName" style="width: 100%" placeholder="Nom"/><br>
 
-          <input type="text" v-model="newBugName" style="width: 100%" placeholder="Name"/><br>
-          <input type="text" v-model="newBugDescription" style="width: 100%" placeholder="Description"/><br>
+          <label for="newBugDescription">Nom</label>
+          <input id="newBugDescription" type="text" v-model="newBugDescription" style="width: 100%" placeholder="Description"/><br>
           <button @click="addBug" style="float: right;">Envoyer</button>
           <br>
           <br>
