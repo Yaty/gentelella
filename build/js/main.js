@@ -47,8 +47,8 @@ const BASE_URL = 'http://localhost:3000/api';
 
 function init_chart_doughnut(contributions = []){
     if (typeof Chart === 'undefined') return;
-    const canvas = $(".canvasDoughnut");
-    if (!canvas.length) return;
+    const canvas = document.querySelector(".canvasDoughnut");
+    if (!canvas) return;
 
     const chart_doughnut_settings = {
         type: 'doughnut',
@@ -66,7 +66,6 @@ function init_chart_doughnut(contributions = []){
             responsive: false
         }
     };
-
     new Chart(canvas, chart_doughnut_settings);
 }
 
@@ -108,6 +107,89 @@ function init_gauge(percentage) {
     gauge.setTextField(document.getElementById("gauge-text"));
 }
 
+function getPlotArray(dates) {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const minDate = new Date(Math.min.apply(null, dates));
+    const maxDate = new Date(Math.max.apply(null, dates));
+
+    const getDayDiff = (date1, data2) => Math.round(Math.abs((date1.getTime() - data2.getTime())/(oneDay)));
+
+    const diff = getDayDiff(minDate, maxDate);
+
+    // Create an element for each date
+    const array = Array.from({length: diff + 1}, (current, i) => {
+        const date = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+        date.setHours(-22);
+        date.setDate(minDate.getDate() + i);
+
+        return [
+            date.getTime(),
+            0,
+        ];
+    });
+
+    // Add occurrences
+    for (const date of dates) {
+        array[getDayDiff(minDate, date)][1]++;
+    }
+
+    return array;
+}
+
+function initPlotChart(dates, chart) {
+    if( typeof ($.plot) === 'undefined'){ return; }
+
+    const times = getPlotArray(dates);
+
+    const plotSettings = {
+        series: {
+            lines: {
+                show: false,
+                fill: true
+            },
+            splines: {
+                show: true,
+                tension: 0.1,
+                lineWidth: 1,
+                fill: 0.4
+            },
+            points: {
+                radius: 5,
+                show: true
+            },
+            shadowSize: 3
+        },
+        grid: {
+            verticalLines: true,
+            hoverable: true,
+            clickable: true,
+            tickColor: "#d5d5d5",
+            borderWidth: 1,
+            color: '#fff'
+        },
+        colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
+        xaxis: {
+            // tickColor: "rgba(51, 51, 51, 0.06)",
+            mode: "time",
+            tickSize: [1, "day"],
+            // tickLength: 10,
+            axisLabel: "Date",
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: 'Verdana, Arial',
+            axisLabelPadding: 10
+        },
+        yaxis: {
+            ticks: 5,
+            tickColor: "rgba(51, 51, 51, 0.06)",
+        },
+        tooltip: false
+    };
+
+
+    $.plot(document.getElementById(chart), [times], plotSettings);
+}
+
 
 const app = new Vue({
     el: '#app',
@@ -140,6 +222,9 @@ const app = new Vue({
         this.selectedProjectId = this.projects.length > 0 ? this.projects[0].id : null;
         await this.loadProject();
         // setInterval(this.loadConversations, 10000);
+        initPlotChart(this.bugs.map((b) => new Date(b.created)), "plot_bugs");
+        initPlotChart(this.meetings.map((b) => new Date(b.date)), "plot_meetings");
+        initPlotChart(this.steps.map((b) => new Date(b.date)), "plot_steps");
     },
     // watch todos change for localStorage persistence
     watch: {
@@ -169,6 +254,14 @@ const app = new Vue({
         }
     },
     methods: {
+        async logout() {
+          await axios.post(
+              BASE_URL + '/accounts/logout'
+          );
+
+          delete axios.defaults.headers.common['Authorization'];
+          window.location.href = '../index.html';
+        },
         async loadConversations() {
             const conversations = await axios.get(
                 BASE_URL + '/accounts/' + this.accountId
@@ -267,7 +360,7 @@ const app = new Vue({
 
             for (const contributor of workers) {
                 if (typeof contributor.closedBugs === 'number') {
-                    contributor.percentage = Math.floor(contributor.closedBugs / this.closedBugsCount) * 100;
+                    contributor.percentage = (contributor.closedBugs / this.closedBugsCount) * 100;
                     contributor.backgroundColor = this.generateHex();
                     contributor.hoverBackgroundColor = this.generateHex();
                     contributors.push(contributor);
