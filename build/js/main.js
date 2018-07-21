@@ -218,6 +218,7 @@ const app = new Vue({
             showAddStepModal: false,
             showAddMeetingModal: false,
             showAddTaskModal: false,
+            showAddBugModal: false,
             openedConversation: null,
             newMessage: '',
             newCollaborator: '',
@@ -228,6 +229,8 @@ const app = new Vue({
             newMeetingDate: null,
             newTaskName: '',
             newTaskStep: '',
+            newBugName: '',
+            newBugDescription: '',
         };
     },
     created() {
@@ -278,6 +281,22 @@ const app = new Vue({
         }
     },
     methods: {
+        async addBug() {
+            await axios.post(
+                BASE_URL + '/accounts/' + this.accountId +
+                '/projects/' + this.selectedProjectId + '/bugs',
+                {
+                    name: this.newBugName,
+                    description: this.newBugDescription,
+                    projectId: this.selectedProjectId,
+                    creatorId: this.accountId,
+                }
+            );
+
+            this.newBugName = '';
+            this.newBugDescription = '';
+            await this.loadProject();
+        },
         async addTask() {
             await axios.post(
                 BASE_URL + '/accounts/' + this.accountId +

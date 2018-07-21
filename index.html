@@ -86,7 +86,7 @@
 
 
           <input type="text" v-model="newStepName" style="width: 100%" placeholder="Name"/><br>
-          <input type="date" v-model="newStepDate" style="width: 100%" placeholder="Name"/><br>
+          <input type="date" v-model="newStepDate" style="width: 100%"/><br>
           <button @click="addStep" style="float: right;">Envoyer</button>
           <br>
           <br>
@@ -101,7 +101,7 @@
           <h1>Ajout d'une tâche</h1>
 
 
-          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Subject"/><br>
+          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Name"/><br>
           <select v-model="newTaskStep">
             <option v-for="step in steps" :key="step.id" :value="step.id">{{ step.name }}</option>
           </select>
@@ -116,13 +116,30 @@
           <span class="close" @click="showAddMeetingModal = false;">&times;</span>
 
           <div style="margin-top: 40px;"></div>
-          <h1>Ajout d'un meeting</h1>
+          <h1>Ajout d'une réunion</h1>
 
 
-          <input type="text" v-model="newMeetingSubject" style="width: 100%" placeholder="Subject"/><br>
-          <input type="text" v-model="newMeetingPlace" style="width: 100%" placeholder="Place"/><br>
-          <input type="date" v-model="newMeetingDate" style="width: 100%" placeholder="Name"/><br>
-          <button @click="addMeeting" style="float: right;">Envoyer</button>
+          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Subject"/><br>
+          <select v-model="newTaskStep">
+            <option v-for="step in steps" :key="step.id" :value="step.id">{{ step.name }}</option>
+          </select>
+          <button @click="addTask" style="float: right;">Envoyer</button>
+          <br>
+          <br>
+        </div>
+      </div>
+
+      <div class="workon-modal" v-show="showAddBugModal">
+        <div class="workon-modal-content">
+          <span class="close" @click="showAddBugModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Ajout d'un bug</h1>
+
+
+          <input type="text" v-model="newBugName" style="width: 100%" placeholder="Name"/><br>
+          <input type="text" v-model="newBugDescription" style="width: 100%" placeholder="Description"/><br>
+          <button @click="addBug" style="float: right;">Envoyer</button>
           <br>
           <br>
         </div>
@@ -377,7 +394,7 @@
                       <li><i class="fa fa-list"></i><a href="#" @click="showAddTaskModal = true">Ajouter une tâche</a>
                       </li>
                       <li><i class="fa fa-users"></i><a href="#" @click="showAddMeetingModal = true">Ajouter une réunion</a> </li>
-                      <li><i class="fa fa-lock"></i><a href="#">Ajouter un bug</a>
+                      <li><i class="fa fa-lock"></i><a href="#" @click="showAddBugModal = true">Ajouter un bug</a>
                       </li>
                       <li><i class="fa fa-sign-out-alt"></i><a href="#" @click="logout">Déconnexion</a>
                       </li>
