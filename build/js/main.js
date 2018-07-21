@@ -216,11 +216,15 @@ const app = new Vue({
             showUpdateProjectModal: false,
             showAddCollaboratorModal: false,
             showAddStepModal: false,
+            showAddMeetingModal: false,
             openedConversation: null,
             newMessage: '',
             newCollaborator: '',
             newStepName: '',
             newStepDate: null,
+            newMeetingSubject: '',
+            newMeetingPlace: '',
+            newMeetingDate: null,
         };
     },
     created() {
@@ -271,6 +275,23 @@ const app = new Vue({
         }
     },
     methods: {
+        async addMeeting() {
+            await axios.post(
+                BASE_URL + '/accounts/' + this.accountId +
+                '/projects/' + this.selectedProjectId + '/meetings',
+                {
+                    subject: this.newMeetingSubject,
+                    date: new Date(this.newMeetingDate).toISOString(),
+                    projectId: this.selectedProjectId,
+                    place: this.newMeetingPlace,
+                }
+            );
+
+            this.newMeetingSubject = '';
+            this.newMeetingPlace = '';
+            this. newMeetingDate = null;
+            await this.loadProject();
+        },
         async addStep() {
             await axios.post(
                 BASE_URL + '/accounts/' + this.accountId +

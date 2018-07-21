@@ -65,7 +65,7 @@
       </div>
 
       <div class="workon-modal" v-show="showAddCollaboratorModal">
-        <div class="workon-modal-content" v-if="selectedProject">
+        <div class="workon-modal-content">
           <span class="close" @click="showAddCollaboratorModal = false;">&times;</span>
 
           <div style="margin-top: 40px;"></div>
@@ -78,7 +78,7 @@
       </div>
 
       <div class="workon-modal" v-show="showAddStepModal">
-        <div class="workon-modal-content" v-if="selectedProject">
+        <div class="workon-modal-content">
           <span class="close" @click="showAddStepModal = false;">&times;</span>
 
           <div style="margin-top: 40px;"></div>
@@ -88,6 +88,23 @@
           <input type="text" v-model="newStepName" style="width: 100%" placeholder="Name"/><br>
           <input type="date" v-model="newStepDate" style="width: 100%" placeholder="Name"/><br>
           <button @click="addStep" style="float: right;">Envoyer</button>
+          <br>
+          <br>
+        </div>
+      </div>
+
+      <div class="workon-modal" v-show="showAddMeetingModal">
+        <div class="workon-modal-content">
+          <span class="close" @click="showAddMeetingModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Ajout d'un meeting</h1>
+
+
+          <input type="text" v-model="newMeetingSubject" style="width: 100%" placeholder="Subject"/><br>
+          <input type="text" v-model="newMeetingPlace" style="width: 100%" placeholder="Place"/><br>
+          <input type="date" v-model="newMeetingDate" style="width: 100%" placeholder="Name"/><br>
+          <button @click="addMeeting" style="float: right;">Envoyer</button>
           <br>
           <br>
         </div>
@@ -341,7 +358,7 @@
                       <li><i class="fa fa-shoe-prints"></i><a href="#" @click="showAddStepModal = true">Ajouter un jalon</a> </li>
                       <li><i class="fa fa-list"></i><a href="#">Ajouter une tâche</a>
                       </li>
-                      <li><i class="fa fa-users"></i><a href="#">Ajouter une réunion</a> </li>
+                      <li><i class="fa fa-users"></i><a href="#" @click="showAddMeetingModal = true">Ajouter une réunion</a> </li>
                       <li><i class="fa fa-lock"></i><a href="#">Ajouter un bug</a>
                       </li>
                       <li><i class="fa fa-sign-out-alt"></i><a href="#" @click="logout">Déconnexion</a>
