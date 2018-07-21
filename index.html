@@ -34,6 +34,22 @@
 
   <body class="nav-md">
     <div class="container body" id="app">
+      <div id="conversationModal" class="workon-modal" v-show="showConversationModal">
+        <div class="workon-modal-content" v-if="openedConversation">
+          <span class="close" @click="showConversationModal = false; openedConversation = null">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+
+          <div v-for="message in openedConversation.messages.slice().reverse()"  :key="message.id" :class="{'message-container': true, 'message-darker': String(message.accountId) === String(accountId)}">
+            <span class="message-content" :style="{'float': String(message.accountId) === String(accountId) ? 'right': 'left'}">{{ message.content }}</span>
+            <span class="message-author" :style="{'float': String(message.accountId) === String(accountId) ? 'left': 'right'}"><i>{{ getMessageOwnerName(message, openedConversation)}}</i></span>
+          </div>
+
+          <input type="text" v-model="newMessage" style="width: 80%" placeholder="Message"/>
+          <button @click="sendMessage" style="width: 10%; float: right;">Envoyer</button>
+        </div>
+      </div>
+
       <div class="main_container">
         <!-- top navigation -->
         <div class="top_nav">
@@ -69,14 +85,18 @@
                     <span class="badge bg-green">{{ conversations.length }}</span>
                   </a>
                   <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li v-for="conversation in conversations" :key="conversation.id">
-                      <a>
+                    <li v-for="conversation in conversations" :key="conversation.id" @click="openConversation(conversation)">
+                      <a v-if="conversation.messages.length">
                         <span>
-                          <span>{{ conversation.emitter.firstname }} {{ conversation.emitter.lastname }}</span>
-                          <span class="time">{{ conversation.lastMessageMinutes }} mins ago</span>
+                          <span>{{ getLastMessage(conversation).firstname }} {{ getLastMessage(conversation).lastname }}</span>
                         </span>
                         <span class="message">
-                          {{ conversation.lastMessage }}
+                          {{ getLastMessage(conversation).content }}
+                        </span>
+                      </a>
+                      <a v-else>
+                        <span class="message">
+                          En attente d'un message.
                         </span>
                       </a>
                     </li>
@@ -99,35 +119,35 @@
           <!-- top tiles -->
           <div class="row tile_count">
             <div class=" col-md-2  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Workers</span>
+              <span class="count_top"><i class="fa fa-user"></i> Collaborateurs</span>
               <div class="count">{{ workersCount }}</div>
             </div>
             <div class=" col-md-2  tile_stats_count">
-              <span class="count_top"><i class="fa fa-lock-open"></i> Opened Bugs</span>
+              <span class="count_top"><i class="fa fa-lock-open"></i> Bugs ouverts</span>
               <div class="count">{{ openedBugsCount }}</div>
             </div>
             <div class=" col-md-2  tile_stats_count">
-              <span class="count_top"><i class="fa fa-lock"></i> Closed Bugs</span>
+              <span class="count_top"><i class="fa fa-lock"></i> Bugs fermés</span>
               <div class="count">{{ closedBugsCount }}</div>
             </div>
             <div class=" col-md-2  tile_stats_count">
-              <span class="count_top"><i class="fa fa-users"></i> Incoming Meetings</span>
+              <span class="count_top"><i class="fa fa-users"></i> Réunions à venir</span>
               <div class="count">{{ incomingMeetingsCount }}</div>
             </div>
               <div class=" col-md-2  tile_stats_count">
-                  <span class="count_top"><i class="fa fa-shoe-prints"></i> Steps to Achieve</span>
+                  <span class="count_top"><i class="fa fa-shoe-prints"></i> Jalons à atteindre</span>
                   <div class="count">{{ stepsToAchieveCount }}</div>
               </div>
             <div class=" col-md-2  tile_stats_count">
-              <span class="count_top"><i class="fa fa-history"></i> Steps Achieved</span>
+              <span class="count_top"><i class="fa fa-history"></i> Jalons atteints</span>
               <div class="count">{{ stepsAchievedCount }}</div>
             </div>
               <div class=" col-md-2  tile_stats_count">
-                  <span class="count_top"><i class="fa fa-list"></i> Tasks to Achieve</span>
+                  <span class="count_top"><i class="fa fa-list"></i> Tâches à réaliser</span>
                   <div class="count">{{ tasksToAchieveCount }}</div>
               </div>
             <div class=" col-md-2 tile_stats_count">
-              <span class="count_top"><i class="fa fa-check"></i> Tasks Achieved</span>
+              <span class="count_top"><i class="fa fa-check"></i> Tâches réalisées</span>
               <div class="count">{{ tasksAchievedCount}}</div>
             </div>
           </div>
@@ -140,7 +160,7 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
               <div class="x_panel tile fixed_height_320">
                 <div class="x_title">
-                  <h2>Advancement</h2>
+                  <h2>Avancement</h2>
                   <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -148,7 +168,7 @@
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <h4>Percentage</h4>
+                  <h4>Pourcentage</h4>
                   <div class="widget_summary">
                     <div class="w_left w_25">
                       <span>Bugs</span>
@@ -168,7 +188,7 @@
 
                   <div class="widget_summary">
                     <div class="w_left w_25">
-                      <span>Meetings</span>
+                      <span>Réunions</span>
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
@@ -184,7 +204,7 @@
                   </div>
                   <div class="widget_summary">
                     <div class="w_left w_25">
-                      <span>Steps</span>
+                      <span>Jalons</span>
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
@@ -200,7 +220,7 @@
                   </div>
                   <div class="widget_summary">
                     <div class="w_left w_25">
-                      <span>Tasks</span>
+                      <span>Tâches</span>
                     </div>
                     <div class="w_center w_55">
                       <div class="progress">
@@ -221,7 +241,7 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
               <div class="x_panel tile fixed_height_320 overflow_hidden">
                 <div class="x_title">
-                  <h2>Best contributors</h2>
+                  <h2>Collaborateurs</h2>
                   <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -230,7 +250,7 @@
                 </div>
                 <div class="x_content">
                   <div v-show="contributions.length === 0" style="text-align: center;">
-                    No contributions yet.
+                    Pas encore de contributions.
                   </div>
                   <table class="" style="width:100%">
                     <tr>
@@ -239,7 +259,7 @@
                           <p class="">Contributions</p>
                         </div>
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                          <p class="">Workers</p>
+                          <p class="">Collaborateurs</p>
                         </div>
                       </th>
                     </tr>
@@ -267,7 +287,7 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
               <div class="x_panel tile fixed_height_320">
                 <div class="x_title">
-                  <h2>Quick Settings</h2>
+                  <h2>Paramétrage</h2>
                   <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -277,22 +297,22 @@
                 <div class="x_content">
                   <div class="dashboard-widget-content">
                     <ul class="quick-list">
-                      <li><i class="fa fa-wrench"></i><a href="#">Project Settings</a>
+                      <li><i class="fa fa-wrench"></i><a href="#">Paramétres projet</a>
                       </li>
-                      <li><i class="fa fa-user"></i><a href="#">Add Workers</a>
+                      <li><i class="fa fa-user"></i><a href="#">Ajouter un collaborateur</a>
                       </li>
-                      <li><i class="fa fa-shoe-prints"></i><a href="#">Add Step</a> </li>
-                      <li><i class="fa fa-list"></i><a href="#">Add Task</a>
+                      <li><i class="fa fa-shoe-prints"></i><a href="#">Ajouter un jalon</a> </li>
+                      <li><i class="fa fa-list"></i><a href="#">Ajouter une tâche</a>
                       </li>
-                      <li><i class="fa fa-users"></i><a href="#">Add Meeting</a> </li>
-                      <li><i class="fa fa-lock"></i><a href="#">Add Bug</a>
+                      <li><i class="fa fa-users"></i><a href="#">Ajouter une réunion</a> </li>
+                      <li><i class="fa fa-lock"></i><a href="#">Ajouter un bug</a>
                       </li>
-                      <li><i class="fa fa-sign-out-alt"></i><a href="#" @click="logout">Logout</a>
+                      <li><i class="fa fa-sign-out-alt"></i><a href="#" @click="logout">Déconnexion</a>
                       </li>
                     </ul>
 
                     <div class="sidebar-widget">
-                        <h4>Project Completion</h4>
+                        <h4>Avancement</h4>
                         <canvas width="150" height="80" id="chart_gauge_01" class="" style="width: 160px; height: 100px;"></canvas>
                         <div class="goal-wrapper">
                           <span id="gauge-text" class="gauge-value pull-left">0</span>
@@ -369,7 +389,7 @@
                 <div class="col-md-6 col-sm-6 col-xs-12" id="todo">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>To Do List</h2>
+                      <h2>To Do Liste</h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
@@ -383,7 +403,7 @@
                           <header class="header">
                             <input class="new-todo"
                                    autofocus autocomplete="off"
-                                   placeholder="What needs to be done?"
+                                   placeholder="Que faut-il faire ?"
                                    v-model="newTodo"
                                    @keyup.enter="addTodo">
                           </header>
@@ -413,10 +433,10 @@
                               <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
                             </span>
                             <ul class="filters">
-                              <li><a href="#/all" :class="{ selected: visibility == 'all' }">All</a></li>
-                              <li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
-                              <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
-                              <li><button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">Clear</button></li>
+                              <li><a href="#/all" :class="{ selected: visibility == 'all' }">Tout</a></li>
+                              <li><a href="#/active" :class="{ selected: visibility == 'active' }">Actifs</a></li>
+                              <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Complétés</a></li>
+                              <li><button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">Vider</button></li>
                             </ul>
                           </footer>
                         </section>
@@ -432,7 +452,7 @@
             </div>
         </div>
         <div class="right-col" style="width: 100%; height: 100vh; text-align: center; vertical-align: center;" v-else>
-          Please select a project.
+          Merci de sélectionner un projet.
         </div>
         <!-- /page content -->
 

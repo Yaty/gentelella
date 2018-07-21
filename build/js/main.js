@@ -212,6 +212,9 @@ const app = new Vue({
             visibility: 'all',
             accountId: userStorage.getAccountId(),
             token: userStorage.getToken(),
+            showConversationModal: false,
+            openedConversation: null,
+            newMessage: '',
         };
     },
     created() {
@@ -221,10 +224,9 @@ const app = new Vue({
         await this.getProjects();
         this.selectedProjectId = this.projects.length > 0 ? this.projects[0].id : null;
         await this.loadProject();
-        // setInterval(this.loadConversations, 10000);
-        initPlotChart(this.bugs.map((b) => new Date(b.created)), "plot_bugs");
-        initPlotChart(this.meetings.map((b) => new Date(b.date)), "plot_meetings");
-        initPlotChart(this.steps.map((b) => new Date(b.date)), "plot_steps");
+        await this.loadConversations();
+        // setInterval(async () => await this.loadConversations(), 10000);
+
     },
     // watch todos change for localStorage persistence
     watch: {
@@ -239,6 +241,15 @@ const app = new Vue({
         },
         percentageTasksDone(completion) {
             init_gauge(completion);
+        },
+        bugs(bugs) {
+            initPlotChart(bugs.map((b) => new Date(b.created)), "plot_bugs");
+        },
+        meetings(meetings) {
+            initPlotChart(meetings.map((b) => new Date(b.date)), "plot_meetings");
+        },
+        steps(steps) {
+            initPlotChart(steps.map((b) => new Date(b.date)), "plot_steps");
         }
     },
     filters: {
@@ -254,6 +265,37 @@ const app = new Vue({
         }
     },
     methods: {
+        async sendMessage() {
+            await axios.post(
+                BASE_URL + '/conversations/' + this.openedConversation.id + '/messages',
+                {
+                    content: this.newMessage,
+                    accountId: this.accountId,
+                },
+            );
+
+            this.newMessage = '';
+            await this.loadConversations();
+            this.openedConversation = this.conversations.find((c) => c.id === this.openedConversation.id);
+        },
+        getMessageOwnerName(message, conversation) {
+            const account = conversation.accounts.find((a) => a.id === message.accountId);
+            return account.firstname + ' ' + account.lastname;
+        },
+        openConversation(conversation) {
+            this.openedConversation = conversation;
+            this.showConversationModal = true;
+        },
+        getLastMessage(conversation) {
+            const message = conversation.messages[conversation.messages.length - 1];
+            const account = conversation.accounts.find((a) => a.id === message.accountId);
+
+            return {
+                firstname: account.firstname,
+                lastname: account.lastname,
+                content: message.content,
+            };
+        },
         async logout() {
           await axios.post(
               BASE_URL + '/accounts/logout'
@@ -263,12 +305,12 @@ const app = new Vue({
           window.location.href = '../index.html';
         },
         async loadConversations() {
-            const conversations = await axios.get(
+            const res = await axios.get(
                 BASE_URL + '/accounts/' + this.accountId
-                + '/conversations?filter={"include":["accounts"]}'
+                + '/conversations?filter={"include":["accounts", "messages"]}'
             );
 
-            console.log(conversations);
+            this.conversations = res.data;
         },
         generateHex() {
             return "#" + Math.random().toString(16).slice(2, 8);
@@ -404,7 +446,7 @@ const app = new Vue({
         incomingMeetingsCount() {
             const now = Date.now();
             return this.meetings.filter(function(meeting) {
-                return new Date(meeting.date) < now;
+                return new Date(meeting.date) > now;
             }).length;
         },
         stepsToAchieveCount() {
