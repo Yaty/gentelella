@@ -93,6 +93,24 @@
         </div>
       </div>
 
+      <div class="workon-modal" v-show="showAddTaskModal">
+        <div class="workon-modal-content">
+          <span class="close" @click="showAddTaskModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Ajout d'une tâche</h1>
+
+
+          <input type="text" v-model="newTaskName" style="width: 100%" placeholder="Subject"/><br>
+          <select v-model="newTaskStep">
+            <option v-for="step in steps" :key="step.id" :value="step.id">{{ step.name }}</option>
+          </select>
+          <button @click="addTask" style="float: right;">Envoyer</button>
+          <br>
+          <br>
+        </div>
+      </div>
+
       <div class="workon-modal" v-show="showAddMeetingModal">
         <div class="workon-modal-content">
           <span class="close" @click="showAddMeetingModal = false;">&times;</span>
@@ -356,7 +374,7 @@
                       <li><i class="fa fa-user"></i><a href="#" @click="showAddCollaboratorModal = true">Ajouter un collaborateur</a>
                       </li>
                       <li><i class="fa fa-shoe-prints"></i><a href="#" @click="showAddStepModal = true">Ajouter un jalon</a> </li>
-                      <li><i class="fa fa-list"></i><a href="#">Ajouter une tâche</a>
+                      <li><i class="fa fa-list"></i><a href="#" @click="showAddTaskModal = true">Ajouter une tâche</a>
                       </li>
                       <li><i class="fa fa-users"></i><a href="#" @click="showAddMeetingModal = true">Ajouter une réunion</a> </li>
                       <li><i class="fa fa-lock"></i><a href="#">Ajouter un bug</a>

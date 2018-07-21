@@ -217,6 +217,7 @@ const app = new Vue({
             showAddCollaboratorModal: false,
             showAddStepModal: false,
             showAddMeetingModal: false,
+            showAddTaskModal: false,
             openedConversation: null,
             newMessage: '',
             newCollaborator: '',
@@ -225,6 +226,8 @@ const app = new Vue({
             newMeetingSubject: '',
             newMeetingPlace: '',
             newMeetingDate: null,
+            newTaskName: '',
+            newTaskStep: '',
         };
     },
     created() {
@@ -275,6 +278,21 @@ const app = new Vue({
         }
     },
     methods: {
+        async addTask() {
+            await axios.post(
+                BASE_URL + '/accounts/' + this.accountId +
+                '/projects/' + this.selectedProjectId + '/tasks',
+                {
+                    name: this.newTaskName,
+                    stepId: this.newTaskStep,
+                    projectId: this.selectedProjectId,
+                }
+            );
+
+            this.newTaskName = '';
+            this.newTaskStep = '';
+            await this.loadProject();
+        },
         async addMeeting() {
             await axios.post(
                 BASE_URL + '/accounts/' + this.accountId +
