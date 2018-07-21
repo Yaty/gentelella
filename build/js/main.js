@@ -213,6 +213,7 @@ const app = new Vue({
             accountId: userStorage.getAccountId(),
             token: userStorage.getToken(),
             showConversationModal: false,
+            showUpdateProjectModal: false,
             openedConversation: null,
             newMessage: '',
         };
@@ -265,6 +266,12 @@ const app = new Vue({
         }
     },
     methods: {
+        async updateProject() {
+          await axios.patch(
+              BASE_URL + '/projects/' + this.selectedProject.id,
+              this.selectedProject,
+          );
+        },
         async sendMessage() {
             await axios.post(
                 BASE_URL + '/conversations/' + this.openedConversation.id + '/messages',

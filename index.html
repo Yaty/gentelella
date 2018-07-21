@@ -34,11 +34,12 @@
 
   <body class="nav-md">
     <div class="container body" id="app">
-      <div id="conversationModal" class="workon-modal" v-show="showConversationModal">
+      <div class="workon-modal" v-show="showConversationModal">
         <div class="workon-modal-content" v-if="openedConversation">
           <span class="close" @click="showConversationModal = false; openedConversation = null">&times;</span>
 
           <div style="margin-top: 40px;"></div>
+          <h1>Conversation</h1>
 
           <div v-for="message in openedConversation.messages.slice().reverse()"  :key="message.id" :class="{'message-container': true, 'message-darker': String(message.accountId) === String(accountId)}">
             <span class="message-content" :style="{'float': String(message.accountId) === String(accountId) ? 'right': 'left'}">{{ message.content }}</span>
@@ -47,6 +48,19 @@
 
           <input type="text" v-model="newMessage" style="width: 80%" placeholder="Message"/>
           <button @click="sendMessage" style="width: 10%; float: right;">Envoyer</button>
+        </div>
+      </div>
+
+      <div class="workon-modal" v-show="showUpdateProjectModal">
+        <div class="workon-modal-content" v-if="selectedProject">
+          <span class="close" @click="showUpdateProjectModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Projet</h1>
+
+
+          <input type="text" v-model="selectedProject.name" style="width: 80%" placeholder="Name"/>
+          <button @click="updateProject" style="width: 10%; float: right;">Envoyer</button>
         </div>
       </div>
 
@@ -68,14 +82,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
                     <li><a href="javascript:;"> Profile</a></li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Settings</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Help</a></li>
-                    <li><a href="#" @click="logout"><i class="fa fa-sign-out-alt pull-right"></i> Log Out</a></li>
+                    <li><a href="#" @click="logout"><i class="fa fa-sign-out-alt pull-right"></i> Déconnexion</a></li>
                   </ul>
                 </li>
 
@@ -297,7 +304,7 @@
                 <div class="x_content">
                   <div class="dashboard-widget-content">
                     <ul class="quick-list">
-                      <li><i class="fa fa-wrench"></i><a href="#">Paramétres projet</a>
+                      <li><i class="fa fa-wrench"></i><a href="#" @click="showUpdateProjectModal = true">Paramètres projet</a>
                       </li>
                       <li><i class="fa fa-user"></i><a href="#">Ajouter un collaborateur</a>
                       </li>
