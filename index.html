@@ -77,6 +77,23 @@
         </div>
       </div>
 
+      <div class="workon-modal" v-show="showAddStepModal">
+        <div class="workon-modal-content" v-if="selectedProject">
+          <span class="close" @click="showAddStepModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Ajout d'un jalon</h1>
+
+
+          <input type="text" v-model="newStepName" style="width: 100%" placeholder="Name"/><br>
+          <input type="date" v-model="newStepDate" style="width: 100%" placeholder="Name"/><br>
+          <button @click="addStep" style="float: right;">Envoyer</button>
+          <br>
+          <br>
+        </div>
+      </div>
+
+
       <div class="main_container">
         <!-- top navigation -->
         <div class="top_nav">
@@ -321,7 +338,7 @@
                       </li>
                       <li><i class="fa fa-user"></i><a href="#" @click="showAddCollaboratorModal = true">Ajouter un collaborateur</a>
                       </li>
-                      <li><i class="fa fa-shoe-prints"></i><a href="#">Ajouter un jalon</a> </li>
+                      <li><i class="fa fa-shoe-prints"></i><a href="#" @click="showAddStepModal = true">Ajouter un jalon</a> </li>
                       <li><i class="fa fa-list"></i><a href="#">Ajouter une tâche</a>
                       </li>
                       <li><i class="fa fa-users"></i><a href="#">Ajouter une réunion</a> </li>

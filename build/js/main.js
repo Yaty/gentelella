@@ -215,9 +215,12 @@ const app = new Vue({
             showConversationModal: false,
             showUpdateProjectModal: false,
             showAddCollaboratorModal: false,
+            showAddStepModal: false,
             openedConversation: null,
             newMessage: '',
             newCollaborator: '',
+            newStepName: '',
+            newStepDate: null,
         };
     },
     created() {
@@ -268,6 +271,22 @@ const app = new Vue({
         }
     },
     methods: {
+        async addStep() {
+            await axios.post(
+                BASE_URL + '/accounts/' + this.accountId +
+                '/projects/' + this.selectedProjectId + '/steps',
+                {
+                    name: this.newStepName,
+                    date: new Date(this.newStepDate).toISOString(),
+                    projectId: this.selectedProjectId,
+                    state: true,
+                }
+            );
+
+            this.newStepDate = null;
+            this.newStepName = '';
+            await this.loadProject();
+        },
         async addCollaborator() {
             await axios.put(
                 BASE_URL + '/accounts/'  +this.accountId +
@@ -275,6 +294,7 @@ const app = new Vue({
                 '/accounts/rel/' + this.newCollaborator
             );
 
+            this.newCollaborator = '';
             await this.loadProject();
         },
         async updateProject() {
