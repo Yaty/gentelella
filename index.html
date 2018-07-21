@@ -64,6 +64,19 @@
         </div>
       </div>
 
+      <div class="workon-modal" v-show="showAddCollaboratorModal">
+        <div class="workon-modal-content" v-if="selectedProject">
+          <span class="close" @click="showAddCollaboratorModal = false;">&times;</span>
+
+          <div style="margin-top: 40px;"></div>
+          <h1>Ajout d'un collaborateur</h1>
+
+
+          <input type="text" v-model="newCollaborator" style="width: 80%" placeholder="E-mail"/>
+          <button @click="addCollaborator" style="width: 10%; float: right;">Envoyer</button>
+        </div>
+      </div>
+
       <div class="main_container">
         <!-- top navigation -->
         <div class="top_nav">
@@ -306,7 +319,7 @@
                     <ul class="quick-list">
                       <li><i class="fa fa-wrench"></i><a href="#" @click="showUpdateProjectModal = true">Paramètres projet</a>
                       </li>
-                      <li><i class="fa fa-user"></i><a href="#">Ajouter un collaborateur</a>
+                      <li><i class="fa fa-user"></i><a href="#" @click="showAddCollaboratorModal = true">Ajouter un collaborateur</a>
                       </li>
                       <li><i class="fa fa-shoe-prints"></i><a href="#">Ajouter un jalon</a> </li>
                       <li><i class="fa fa-list"></i><a href="#">Ajouter une tâche</a>

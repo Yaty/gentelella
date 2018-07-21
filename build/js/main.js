@@ -214,8 +214,10 @@ const app = new Vue({
             token: userStorage.getToken(),
             showConversationModal: false,
             showUpdateProjectModal: false,
+            showAddCollaboratorModal: false,
             openedConversation: null,
             newMessage: '',
+            newCollaborator: '',
         };
     },
     created() {
@@ -266,6 +268,15 @@ const app = new Vue({
         }
     },
     methods: {
+        async addCollaborator() {
+            await axios.put(
+                BASE_URL + '/accounts/'  +this.accountId +
+                '/projects/' + this.selectedProjectId +
+                '/accounts/rel/' + this.newCollaborator
+            );
+
+            await this.loadProject();
+        },
         async updateProject() {
           await axios.patch(
               BASE_URL + '/projects/' + this.selectedProject.id,
@@ -458,12 +469,12 @@ const app = new Vue({
         },
         stepsToAchieveCount() {
             return this.steps.filter(function(step) {
-                return step.state === false;
+                return step.state === true;
             }).length;
         },
         stepsAchievedCount() {
             return this.steps.filter(function(step) {
-                return step.state === true;
+                return step.state === false;
             }).length;
         },
         tasksToAchieveCount() {
