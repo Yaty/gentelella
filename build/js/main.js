@@ -45,10 +45,17 @@ const filters = {
 
 const BASE_URL = 'http://localhost:3000/api';
 
+let chart;
+
 function init_chart_doughnut(contributions = []){
     if (typeof Chart === 'undefined') return;
     const canvas = document.querySelector(".canvasDoughnut");
     if (!canvas) return;
+
+    if (chart) {
+        chart.clear();
+        chart.destroy();
+    }
 
     const chart_doughnut_settings = {
         type: 'doughnut',
@@ -66,7 +73,8 @@ function init_chart_doughnut(contributions = []){
             responsive: false
         }
     };
-    new Chart(canvas, chart_doughnut_settings);
+
+    chart = new Chart(canvas, chart_doughnut_settings);
 }
 
 let gauge;
